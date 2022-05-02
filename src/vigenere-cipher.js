@@ -19,41 +19,39 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
-class VigenereCipheringMachine {
+ class VigenereCipheringMachine {
   constructor(doNotReverse) {
     this.doNotReverse = doNotReverse;
+   
   }
    convertLetterToPos(phrase, result) {
+      let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
        phrase.toUpperCase().split('').forEach(letter => {
       if(letter.toLowerCase() === letter.toUpperCase()) {
         result.push(letter);
       } else {
-        letter = letter.charCodeAt(0) - 64;
+        letter = alphabet.indexOf(letter);
         result.push(letter);
       }
+     
     });
    }
   encrypt(message, key) {
+    let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     if (message === undefined || key === undefined) {
       throw new Error('Incorrect arguments!');
     }
     let codedMessage = [];
     let keyLetters = [];
     let result = [];
-    
+  
     this.convertLetterToPos(message, codedMessage);
     this.convertLetterToPos(key, keyLetters);
    
    for(let i = 0, j = 0; i < codedMessage.length; i++) {
      if(typeof codedMessage[i] === 'number') {
        let newIndex = (codedMessage[i] + keyLetters[j % keyLetters.length]) % 26;
-       let newLetter;
-       if (newIndex  <= 0) {
-        newLetter = String.fromCharCode(newIndex + 89);
-       } else {
-        newLetter = String.fromCharCode(newIndex + 63);
-       }
-        result.push(newLetter);
+        result.push(alphabet[newIndex]);
         j++;
      } else {
        result.push(codedMessage[i]);
@@ -67,10 +65,10 @@ class VigenereCipheringMachine {
   }
   
   decrypt(message, key) {
+      let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     if (message === undefined || key === undefined) {
       throw new Error('Incorrect arguments!');
     }
-    console.log(message);
     let decodedMessage = [];
     let keyLetters = [];
     let result = [];
@@ -81,13 +79,7 @@ class VigenereCipheringMachine {
     for(let i = 0, j = 0; i < decodedMessage.length; i++) {
      if(typeof decodedMessage[i] === 'number') {
        let newIndex = (decodedMessage[i] - keyLetters[j % keyLetters.length] + 26) % 26;
-       let newLetter;
-       if (newIndex  >= 26) {
-        newLetter = String.fromCharCode(newIndex + 87);
-       } else {
-        newLetter = String.fromCharCode(newIndex + 65);
-       }
-        result.push(newLetter);
+        result.push(alphabet[newIndex]);
        j++;
      } else {
        result.push(decodedMessage[i]);
@@ -101,7 +93,6 @@ class VigenereCipheringMachine {
    }
   }
   }
-  
 
 module.exports = {
   VigenereCipheringMachine
